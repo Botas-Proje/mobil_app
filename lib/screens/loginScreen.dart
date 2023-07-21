@@ -24,10 +24,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("BOTAŞ"),
-        centerTitle: true,
-      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -45,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             const SizedBox(
-              height: 10,
+              height: 20,
             ),
             CupertinoTextFormFieldRow(
               padding: EdgeInsets.symmetric(horizontal: 12),
@@ -58,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: Colors.redAccent),
                   color: Color.fromARGB(255, 243, 242, 242),
-                  boxShadow: [
+                  boxShadow: const [
                     BoxShadow(
                       color: Colors.grey,
                       blurRadius: 10.0,
@@ -74,12 +70,12 @@ class _LoginScreenState extends State<LoginScreen> {
               controller: passwordController,
               placeholderStyle:
                   const TextStyle(color: Color.fromARGB(255, 111, 111, 112)),
-              style: TextStyle(color: Colors.black54),
+              style: const TextStyle(color: Colors.black54),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: Colors.redAccent),
-                  color: Color.fromARGB(255, 243, 242, 242),
-                  boxShadow: [
+                  color: const Color.fromARGB(255, 243, 242, 242),
+                  boxShadow: const [
                     BoxShadow(
                       color: Colors.grey,
                       blurRadius: 10.0,
@@ -88,18 +84,38 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 8),
             Center(
-              child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    elevation: 3,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(32.0)),
+              child: SizedBox(
+                width: 150,
+                height: 45.0,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(32.0)),
+                    ),
+                    child: Text(
+                      "Giriş yap",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () {
+                      print("butona basıldı");
+                      _signInUser();
+                    }),
+              ),
+            ),
+            Expanded(
+              child: Center(
+                child: SizedBox(
+                  //width: MediaQuery.sizeOf(context).width,
+                  child: Image.asset(
+                    'assets/images/ai3.png',
                   ),
-                  child: Text("Giriş yap"),
-                  onPressed: () {
-                    print("butona basıldı");
-                    _signInUser();
-                  }),
-            )
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
           ],
         ),
       ),
@@ -118,14 +134,15 @@ class _LoginScreenState extends State<LoginScreen> {
       _alertdialogBuilder();
     }
 
-    ///
-    else {
+    try {
       emailController.clear();
       passwordController.clear();
 
       if (mounted) {
-        Navigator.pushNamed(context, "/products");
+        Navigator.pushNamed(context, "/imageScreen");
       }
+    } catch (e) {
+      print("Sayfaya giremiyor ");
     }
   }
 
