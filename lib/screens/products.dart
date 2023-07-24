@@ -33,7 +33,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
           ElevatedButton(
             onPressed: () {
               if (mounted) {
-                Navigator.pushNamed(context, "/forHttp");
+                // Navigator.pushNamed(context, "/forHttp");
+                Navigator.pushNamed(context, "/checkImageScreen");
               }
             },
             child: const Row(

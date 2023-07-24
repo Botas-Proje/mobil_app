@@ -10,7 +10,10 @@ import 'package:mpaiapp/screens/loginScreen.dart';
 import 'package:mpaiapp/screens/mainPage.dart';
 import 'package:mpaiapp/screens/nullPageScreen.dart';
 import 'package:mpaiapp/screens/products.dart';
+import 'package:mpaiapp/services/ODSGallery.dart';
+import 'package:mpaiapp/services/deneme.dart';
 import 'package:mpaiapp/services/forHttp.dart';
+import 'package:mpaiapp/services/ODSCamera.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,10 +44,14 @@ class MyApp extends StatelessWidget {
         '/imageScreen': (context) => ImageScreen(),
         '/nullPage': (context) => NullPageScreen(),
         '/forHttp': (context) => forHttp(),
-        '/checkImageScreen': (context) {
-          File file = ModalRoute.of(context)!.settings.arguments as File;
-          return CheckImageScreen(file);
-        },
+        '/checkImageScreen': (context) => CheckImageScreen(),
+        '/ODSCamera': (context) => ODSCamera(),
+        '/ODSGallery': (context) => ODSGallery(),
+        '/deneme': (context) => ImageProcessingPage(),
+        //{
+        //  File file = ModalRoute.of(context)!.settings.arguments as File;
+        //  return CheckImageScreen(file);
+        //},
       },
     );
   }

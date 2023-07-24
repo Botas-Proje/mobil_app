@@ -6,9 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CheckImageScreen extends StatefulWidget {
-  const CheckImageScreen(this.file, {super.key});
-
-  final File file;
+  const CheckImageScreen({super.key});
 
   @override
   State<CheckImageScreen> createState() => _CheckImageScreenState();
@@ -17,25 +15,35 @@ class CheckImageScreen extends StatefulWidget {
 class _CheckImageScreenState extends State<CheckImageScreen> {
   @override
   Widget build(BuildContext context) {
-    print(widget.file.toString());
-    // final arguments = ModalRoute.of(context)?.settings.arguments as File?;
-
-    if (widget.file == null) {
-      return const Center(
-        child: CircularProgressIndicator.adaptive(),
-      );
-    }
-
     return Scaffold(
       body: Center(
         child: Column(
           children: [
             Column(
               children: [
-                Image.file(widget.file),
-                TextButton(
-                  onPressed: null,
-                  child: Text("Sonuçlar"),
+                ElevatedButton(
+                  onPressed: () {
+                    if (mounted) {
+                      Navigator.pushNamed(context, "/ODSCamera");
+                    }
+                  },
+                  child: const Text("Kameradan resim çek"),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    if (mounted) {
+                      Navigator.pushNamed(context, "/ODSGallery");
+                    }
+                  },
+                  child: const Text("Galeriden resim seç"),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    if (mounted) {
+                      Navigator.pushNamed(context, "/deneme");
+                    }
+                  },
+                  child: const Text("Deneme için"),
                 ),
               ],
             ),

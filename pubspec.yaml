@@ -43,6 +43,8 @@ dependencies:
   image_picker: ^1.0.1
   flutter_toolbar: ^0.0.2
   http: ^1.1.0
+  flutter_image_compress: ^2.0.4
+  path_provider: ^2.0.15
 
 dev_dependencies:
   flutter_test:
