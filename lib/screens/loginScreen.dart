@@ -153,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (authResult == null) {
       print("Sign in error.");
-      _alertdialogBuilder();
+      return _alertdialogBuilder();
     }
 
     try {
