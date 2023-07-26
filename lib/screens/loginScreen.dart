@@ -139,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
       passwordController.clear();
 
       if (mounted) {
-        Navigator.pushNamed(context, "/imageScreen");
+        Navigator.pushNamed(context, "/checkImageScreen");
       }
     } catch (e) {
       print("Sayfaya giremiyor ");

@@ -29,22 +29,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Ürünler"),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              if (mounted) {
-                // Navigator.pushNamed(context, "/forHttp");
-                Navigator.pushNamed(context, "/checkImageScreen");
-              }
-            },
-            child: const Row(
-              children: [
-                Text("Web servis"),
-                Icon(Icons.forward),
-              ],
-            ),
-          ),
-        ],
       ),
       body: StreamBuilder(
         stream: _products.snapshots(),
@@ -56,12 +40,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
                 final DocumentSnapshot documentSnapshot =
                     streamSnapshot.data!.docs[index];
                 return Card(
-                  margin: const EdgeInsets.all(15),
+                  margin: const EdgeInsets.all(7),
                   child: ListTile(
-                    title: Text(documentSnapshot['productName']),
-                    subtitle: Text(documentSnapshot['productCount'].toString()),
+                    title: Text("${documentSnapshot['productName']}"),
+                    subtitle: Text(
+                        "Adet : ${documentSnapshot['productCount'].toString()}"),
                     trailing: SizedBox(
-                      width: 100,
+                      width: 70,
                       child: Row(
                         children: [
                           IconButton(
@@ -97,7 +82,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                 height: 5,
               ),
               Text(
-                "Ürün Adı : ${documentSnapshot["productName"]}",
+                "Ürün Adı : ${documentSnapshot["productName"]}\nMevcut Adet : ${documentSnapshot["productCount"]}",
                 style: TextStyle(fontWeight: FontWeight.w500),
               ),
               const SizedBox(
@@ -141,7 +126,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   int num = int.parse(_productCountController.text);
                   await _products.doc(documentSnapshot!.id).update({
                     // "productName": productName,
-                    "productCount": productCount - num
+                    "productCount": num - productCount
                   });
                   _productNameController.text = "";
                   _productCountController.text = "";

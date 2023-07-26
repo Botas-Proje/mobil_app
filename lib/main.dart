@@ -4,6 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mpaiapp/Widgets/minus_plus.dart';
+import 'package:mpaiapp/screens/CameraSecreen.dart';
+import 'package:mpaiapp/screens/GallerySelectScreen.dart';
 import 'package:mpaiapp/screens/checkImageScreen.dart';
 import 'package:mpaiapp/screens/imageScreen.dart';
 import 'package:mpaiapp/screens/loginScreen.dart';
@@ -12,6 +15,7 @@ import 'package:mpaiapp/screens/nullPageScreen.dart';
 import 'package:mpaiapp/screens/products.dart';
 import 'package:mpaiapp/services/ODSGallery.dart';
 import 'package:mpaiapp/services/deneme.dart';
+import 'package:mpaiapp/services/example.dart';
 import 'package:mpaiapp/services/forHttp.dart';
 import 'package:mpaiapp/services/ODSCamera.dart';
 
@@ -31,6 +35,7 @@ class MyApp extends StatelessWidget {
       title: 'BOTAŞ ODS',
       home: const LoginScreen(),
       theme: ThemeData(
+        fontFamily: "Poppins",
         primaryColor: Colors.red,
         primarySwatch: Colors.red,
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -48,6 +53,15 @@ class MyApp extends StatelessWidget {
         '/ODSCamera': (context) => ODSCamera(),
         '/ODSGallery': (context) => ODSGallery(),
         '/deneme': (context) => ImageProcessingPage(),
+        '/example': (context) => Example(),
+        '/gallery': (context) => GallerySelectScreen(),
+        '/camera': (context) => CameraScreen(),
+        '/minusPlus': (context) {
+          final arguments =
+              ModalRoute.of(context)!.settings.arguments as String;
+          return Minus_Plus_Widget(arguments);
+        },
+
         //{
         //  File file = ModalRoute.of(context)!.settings.arguments as File;
         //  return CheckImageScreen(file);

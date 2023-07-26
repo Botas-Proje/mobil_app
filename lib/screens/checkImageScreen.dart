@@ -16,34 +16,42 @@ class _CheckImageScreenState extends State<CheckImageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(actions: [
+        IconButton(
+            onPressed: () {
+              if (mounted) {
+                Navigator.pushNamed(context, "/products");
+              }
+            },
+            icon: const Icon(Icons.folder))
+      ]),
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Text(
+                  "Resmi nereden yükleyeceğinizi seçiniz.",
+                  style: TextStyle(fontSize: 17),
+                ),
+                SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
                     if (mounted) {
-                      Navigator.pushNamed(context, "/ODSCamera");
+                      Navigator.pushNamed(context, "/gallery");
                     }
                   },
-                  child: const Text("Kameradan resim çek"),
+                  child: const Text("Galeriden  seç"),
                 ),
                 ElevatedButton(
                   onPressed: () {
                     if (mounted) {
-                      Navigator.pushNamed(context, "/ODSGallery");
+                      Navigator.pushNamed(context, "/camera");
                     }
                   },
-                  child: const Text("Galeriden resim seç"),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    if (mounted) {
-                      Navigator.pushNamed(context, "/deneme");
-                    }
-                  },
-                  child: const Text("Deneme için"),
+                  child: const Text("Kameradan al"),
                 ),
               ],
             ),
