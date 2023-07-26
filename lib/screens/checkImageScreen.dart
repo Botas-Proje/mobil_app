@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CheckImageScreen extends StatefulWidget {
   const CheckImageScreen({super.key});
@@ -39,17 +40,21 @@ class _CheckImageScreenState extends State<CheckImageScreen> {
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    if (mounted) {
-                      Navigator.pushNamed(context, "/gallery");
-                    }
+                    Navigator.pushNamed(
+                      context,
+                      "/gallery",
+                      arguments: ImageSource.gallery,
+                    );
                   },
                   child: const Text("Galeriden  seç"),
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    if (mounted) {
-                      Navigator.pushNamed(context, "/camera");
-                    }
+                    Navigator.pushNamed(
+                      context,
+                      "/gallery",
+                      arguments: ImageSource.camera,
+                    );
                   },
                   child: const Text("Kameradan al"),
                 ),

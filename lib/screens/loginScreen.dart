@@ -1,9 +1,5 @@
-import 'dart:convert';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:mpaiapp/screens/products.dart';
 import 'package:mpaiapp/services/authenticationService.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -23,101 +19,127 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.of(context).viewInsets;
+    var bottomInsets = 0.0;
+
+    if (bottomPadding.bottom - 80 >= 0) {
+      bottomInsets = bottomPadding.bottom - 80;
+    }
+
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Expanded(
-              child: Center(
-                child: SizedBox(
-                  width: MediaQuery.sizeOf(context).width * 0.6,
-                  child: Image.asset(
-                    'assets/images/botos_clear.png',
-                  ),
+      resizeToAvoidBottomInset: false,
+      body: Column(
+        children: [
+          Expanded(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: RadialGradient(
+                  center: Alignment(0, -0.3),
+                  radius: 0.8,
+                  colors: [
+                    Color(0xffff5d5d),
+                    Color(0xffcc0015),
+                  ],
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0).copyWith(
+                  top: MediaQuery.paddingOf(context).top,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Flexible(
+                      child: Center(
+                        child: SizedBox(
+                          width: MediaQuery.sizeOf(context).width * 0.4,
+                          child: Image.asset(
+                            'assets/images/botos_clear.png',
+                            colorBlendMode: BlendMode.srcIn,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    CupertinoTextFormFieldRow(
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      placeholder: "E-mail",
+                      controller: emailController,
+                      placeholderStyle: const TextStyle(
+                          color: Color.fromARGB(255, 111, 111, 112)),
+                      style: TextStyle(color: Colors.black54),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.redAccent),
+                          color: Color.fromARGB(255, 243, 242, 242),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.grey,
+                              blurRadius: 10.0,
+                            )
+                          ]),
+                    ),
+                    const SizedBox(height: 8),
+                    CupertinoTextFormFieldRow(
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      placeholder: "Şifre",
+                      obscureText: true,
+                      autocorrect: false,
+                      controller: passwordController,
+                      placeholderStyle: const TextStyle(
+                          color: Color.fromARGB(255, 111, 111, 112)),
+                      style: const TextStyle(color: Colors.black54),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.redAccent),
+                          color: const Color.fromARGB(255, 243, 242, 242),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.grey,
+                              blurRadius: 10.0,
+                            )
+                          ]),
+                    ),
+                    const SizedBox(height: 8),
+                    SizedBox(height: 10),
+                    Center(
+                      child: SizedBox(
+                        width: 150,
+                        height: 45.0,
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              elevation: 3,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(32.0)),
+                            ),
+                            child: Text(
+                              "Giriş yap",
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            onPressed: () {
+                              print("butona basıldı");
+                              _signInUser();
+                            }),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            const SizedBox(
-              height: 20,
+          ),
+          SizedBox(height: bottomInsets),
+          SizedBox(
+            height: 80,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Image.asset('assets/images/ai3.png'),
             ),
-            CupertinoTextFormFieldRow(
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              placeholder: "E-mail",
-              controller: emailController,
-              placeholderStyle:
-                  const TextStyle(color: Color.fromARGB(255, 111, 111, 112)),
-              style: TextStyle(color: Colors.black54),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.redAccent),
-                  color: Color.fromARGB(255, 243, 242, 242),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.grey,
-                      blurRadius: 10.0,
-                    )
-                  ]),
-            ),
-            const SizedBox(height: 8),
-            CupertinoTextFormFieldRow(
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              placeholder: "Şifre",
-              obscureText: true,
-              autocorrect: false,
-              controller: passwordController,
-              placeholderStyle:
-                  const TextStyle(color: Color.fromARGB(255, 111, 111, 112)),
-              style: const TextStyle(color: Colors.black54),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.redAccent),
-                  color: const Color.fromARGB(255, 243, 242, 242),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.grey,
-                      blurRadius: 10.0,
-                    )
-                  ]),
-            ),
-            const SizedBox(height: 8),
-            Center(
-              child: SizedBox(
-                width: 150,
-                height: 45.0,
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      elevation: 3,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(32.0)),
-                    ),
-                    child: Text(
-                      "Giriş yap",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    onPressed: () {
-                      print("butona basıldı");
-                      _signInUser();
-                    }),
-              ),
-            ),
-            Expanded(
-              child: Center(
-                child: SizedBox(
-                  //width: MediaQuery.sizeOf(context).width,
-                  child: Image.asset(
-                    'assets/images/ai3.png',
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

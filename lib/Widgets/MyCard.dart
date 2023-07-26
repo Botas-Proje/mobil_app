@@ -1,28 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class MyCard extends StatefulWidget {
-  MyCard(this.value, this.forString, {super.key});
+class MyCard extends StatelessWidget {
+  MyCard(this.value, this.forString, {this.onTap, super.key});
 
-  String value;
-  String forString;
-  @override
-  State<MyCard> createState() => _MyCardState();
-}
+  final String value;
+  final String forString;
+  final void Function()? onTap;
 
-class _MyCardState extends State<MyCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.all(5),
       child: InkWell(
-        onTap: () {
-          if (mounted) {
-            Navigator.pushNamed(context, "/minusPlus", arguments: widget.value);
-          }
-        },
+        onTap: onTap,
         child: ListTile(
-          title: Center(child: Text(" ${widget.forString} ")),
+          title: Center(child: Text(" $forString ")),
           trailing: SizedBox(
             width: 100,
           ),

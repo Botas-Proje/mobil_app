@@ -14,7 +14,6 @@ class HttpService {
         body: jsonEncode(body),
         headers: <String, String>{
           "Content-Type": "application/json",
-          "Accept": "application/json"
         });
   }
 }

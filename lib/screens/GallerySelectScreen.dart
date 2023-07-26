@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -18,68 +19,64 @@ class GallerySelectScreen extends StatefulWidget {
 }
 
 class _GallerySelectScreenState extends State<GallerySelectScreen> {
-  File? imageFile;
+  final _products = FirebaseFirestore.instance.collection('products');
+
+  List<QueryDocumentSnapshot<Map<String, dynamic>>> products = [];
+
+  Uint8List? imageFile;
   File? compressedFile;
   String? endValue;
 
   final _picker = ImagePicker();
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   String values = '';
   List<String> results = [];
-  Map<String, dynamic> end = {};
+  Map<String, dynamic> end = {"Telefon": "0.9", "Klavye": "0.1", "Priz": "0.0"};
+
   Map<String, dynamic> short_end = {};
-  // var Priz = "";
-  // var Telefon = "";
-  // var Klavye = "";
   XFile? image;
+
   //base64
-  void _pickImageBase64Gallery() async {
+  void _pickImageBase64Gallery(ImageSource source) async {
     // const maxSize = 146 * 146;
     final image = await _picker.pickImage(
-        source: ImageSource.gallery,
-        imageQuality: 25,
-        maxHeight: 600,
-        maxWidth: 900);
-
-    print(image!.length());
-
-    final String directory = (await getApplicationDocumentsDirectory()).path;
-    final String imagePath = '$directory/resim.jpg';
-    print(imagePath);
-    if (image != null) {
-      await image.saveTo(imagePath);
-    }
+      source: source,
+      imageQuality: 25,
+      maxHeight: 600,
+      maxWidth: 600,
+    );
 
     if (image == null) {
       print("resim değeri null");
+      Navigator.pop(context);
       return;
     }
-    if (image != null) {
-      setState(() {
-        imageFile = File(image.path);
-      });
-    }
 
-    if (image != null) {
-      List<int> imageBytes = await image.readAsBytes();
-      String base64String = base64Encode(imageBytes);
+    imageFile = await image.readAsBytes();
 
-      //son hali nasıl
-      print(base64String.length);
-      print(base64String);
+    setState(() {});
 
-      //json formatında post etme
-      print("JSONN");
-      var json = jsonEncode({'image': base64String});
-      print(json);
+    String base64String = base64Encode(imageFile!);
 
-      final response = await HttpService.post('', {'image': base64String});
-      values = response.body;
+    //son hali nasıl
+    print(base64String.length);
+    print(base64String);
+
+    //json formatında post etme
+    print("JSONN");
+    var json = jsonEncode({'image': base64String});
+    print(json);
+
+    final response = await HttpService.post('', {'image': base64String});
+    values = response.body;
+
+    // if (response.statusCode >= 200 && response.statusCode <= 299) {
+    // setState(() {
+    //   end = Map<String, dynamic>.from(jsonDecode(response.body));
+    // });
+    // }
+
+    /*
       results = values.split(",");
       for (var i = 0; i < results.length; i++) {
         var deger = results[i].split(":");
@@ -92,103 +89,196 @@ class _GallerySelectScreenState extends State<GallerySelectScreen> {
       setState(() {
         values;
       });
+
       print(values);
       print("val : ${values}");
+      */
 
-      if (response.statusCode == 200) {
-        print('Başarılı cevap: ${response.body}');
-      } else {
-        print('İstek başarısız: ${response.statusCode}');
-      }
+    if (response.statusCode == 200) {
+      print('Başarılı cevap: ${response.body}');
     } else {
-      print("Failed...");
+      print('İstek başarısız: ${response.statusCode}');
     }
+  }
+
+  void _dialogMinusPlusBuilder(
+      QueryDocumentSnapshot<Object?> documentSnapshot) {
+    final _productNameController = TextEditingController();
+    final _productCountController = TextEditingController();
+
+    Future<void> _update([DocumentSnapshot? documentSnapshot]) async {
+      if (documentSnapshot != null) {
+        _productNameController.text = documentSnapshot['productName'];
+        _productCountController.text =
+            documentSnapshot['productCount'].toString();
+      }
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Ürünü Güncelleyin'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(
+                height: 5,
+              ),
+              Text(
+                "Ürün Adı : ${documentSnapshot["productName"]}\nMevcut Adet : ${documentSnapshot["productCount"]}",
+                style: TextStyle(fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              TextField(
+                controller: _productCountController,
+                decoration: InputDecoration(
+                  hintText: "Ürün sayısı giriniz",
+                ),
+                keyboardType: TextInputType.number,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: const Text('Ekle'),
+              onPressed: () async {
+                final String productName = _productNameController.text;
+                final int? productCount =
+                    int.tryParse(_productCountController.text);
+                _update(documentSnapshot);
+                if (productCount != null) {
+                  int num = int.parse(_productCountController.text);
+                  await _products.doc(documentSnapshot!.id).update({
+                    // "productName": productName,
+                    "productCount": productCount + num
+                  });
+                  _productNameController.text = "";
+                  _productCountController.text = "";
+                }
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Çıkart'),
+              onPressed: () async {
+                final String productName = _productNameController.text;
+                final int? productCount =
+                    int.tryParse(_productCountController.text);
+                _update(documentSnapshot);
+                if (productCount != null) {
+                  int num = int.parse(_productCountController.text);
+                  await _products.doc(documentSnapshot!.id).update({
+                    // "productName": productName,
+                    "productCount": productCount - num
+                  });
+                  _productNameController.text = "";
+                  _productCountController.text = "";
+                }
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Çıkış'),
+              onPressed: () {
+                if (mounted) {
+                  Navigator.of(context).popUntil(
+                    (route) => route.settings.name == '/gallery',
+                  );
+
+// Navigator.pushNamed(context, "/checkImageScreen");
+                }
+
+                /*
+                Future.delayed(Duration.zero, () {
+                  Navigator.of(context).pop();
+                });
+                */
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void checkProduct(String id) {
+    final matchedProducts = products
+        .where(
+          (snapshot) => snapshot['productName'] == id,
+        )
+        .toList();
+
+    if (matchedProducts.isNotEmpty) {
+      _dialogMinusPlusBuilder(products.first);
+    }
+  }
+
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? listener;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final source = ModalRoute.of(context)!.settings.arguments as ImageSource;
+
+      _pickImageBase64Gallery(source);
+
+      listener = _products.snapshots().listen((snapshot) {
+        products = snapshot.docs;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    listener?.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    //çıkan en büyük sonucu dönecek
-
-    Map<String, dynamic> shorting(Map<String, dynamic> map) {
-      for (var i in map.keys) {
-        var value = double.parse(map[i]);
-        short_end[i] = value;
-      }
-      var sortedByValueMap = Map.fromEntries(short_end.entries.toList()
-        ..sort((e1, e2) =>
-            e1.value.compareTo(e2.value))); //büyükten küçüğe sıralar
-      var index = sortedByValueMap.keys.first;
-      var result = {index: sortedByValueMap[index]};
-
-      return result;
-    }
-
-    // Tasarım kodları
-    if (imageFile == null) {
-      _pickImageBase64Gallery();
-    }
-
-    setState(() {
-      values;
-      end;
-      //  Telefon;
-      //  Priz;
-      //  Klavye;
-    });
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Ürünler'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            imageFile == null
-                ? Container(
-                    child: Text("Henüz resim yüklemediniz."),
-                    padding: EdgeInsets.symmetric(vertical: 50),
-                  )
-                : Column(
-                    children: [
-                      values == null
-                          ? CircularProgressIndicator()
-                          : Column(
-                              children: [
-                                SizedBox(
-                                  width: MediaQuery.sizeOf(context).width * 0.3,
-                                  child: Image.file(imageFile!),
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(20.0),
-                                  child: SizedBox(
-                                    child: Text(
-                                      "Görüntüyü hangi nesne sınıfına kaydetmek istediğinizi seçiniz.",
-                                      style: TextStyle(
-                                          fontSize: 17, fontFamily: "Poppins"),
-                                    ),
-                                  ),
-                                ),
-                                for (var i in end.keys)
-                                  MyCard(i, i + ":" + end[i]),
-
-                                /*
-                                for (var i in shorting(exampleMap).keys)
-                                  MyCard(
-                                      i,
-                                      i +
-                                          ":" +
-                                          shorting(exampleMap)[i].toString()),    */
-                              ],
-                            ),
-                      // Image.file(imageFile!),
-                    ],
-                  ),
-          ],
-        ),
+      body: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          imageFile == null
+              ? Container(
+                  child: Text("Henüz resim yüklemediniz."),
+                  padding: EdgeInsets.symmetric(vertical: 50),
+                )
+              : Column(
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.sizeOf(context).width * .4,
+                      child: Image.memory(
+                        imageFile!,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: SizedBox(
+                        child: Text(
+                          "Görüntüyü hangi nesne sınıfına kaydetmek istediğinizi seçiniz.",
+                          style: TextStyle(fontSize: 17, fontFamily: "Poppins"),
+                        ),
+                      ),
+                    ),
+                    for (var i in end.keys)
+                      MyCard(
+                        i,
+                        i + ":" + end[i],
+                        onTap: () => checkProduct(i),
+                      ),
+                  ],
+                )
+        ],
       ),
     );
   }

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class forHttp extends StatefulWidget {
+class ForHttp extends StatefulWidget {
   @override
-  _forHttpState createState() => _forHttpState();
+  _ForHttpState createState() => _ForHttpState();
 }
 
-class _forHttpState extends State<forHttp> {
+class _ForHttpState extends State<ForHttp> {
   Future<void> fetchData() async {
     final response = await http.get(Uri.parse('http://10.10.208.123:8080/web'));
     if (response.statusCode == 200) {
