@@ -31,7 +31,8 @@ class _GallerySelectScreenState extends State<GallerySelectScreen> {
 
   String values = '';
   List<String> results = [];
-  Map<String, dynamic> end = {"Telefon": "0.9", "Klavye": "0.1", "Priz": "0.0"};
+  Map<String, dynamic> end =
+      {}; // {"Telefon": "0.9", "Klavye": "0.1", "Priz": "0.0"};
 
   Map<String, dynamic> short_end = {};
   XFile? image;
@@ -70,29 +71,29 @@ class _GallerySelectScreenState extends State<GallerySelectScreen> {
     final response = await HttpService.post('', {'image': base64String});
     values = response.body;
 
-    // if (response.statusCode >= 200 && response.statusCode <= 299) {
-    // setState(() {
-    //   end = Map<String, dynamic>.from(jsonDecode(response.body));
-    // });
-    // }
-
     /*
-      results = values.split(",");
-      for (var i = 0; i < results.length; i++) {
-        var deger = results[i].split(":");
-        var key = deger[0];
-        var value = deger[1];
-        end[key] = value;
-      }
-
-      print("---------------------------");
+    if (response.statusCode >= 200 && response.statusCode <= 299) {
       setState(() {
-        values;
+        end = Map<String, dynamic>.from(jsonDecode(response.body));
       });
+    }  */
 
-      print(values);
-      print("val : ${values}");
-      */
+    results = values.split(",");
+    for (var i = 0; i < results.length; i++) {
+      var deger = results[i].split(":");
+      var key = deger[0];
+      var value = deger[1];
+      end[key] = value;
+    }
+
+    print("---------------------------");
+    setState(() {
+      values;
+      end;
+    });
+
+    print(values);
+    print("val : ${values}");
 
     if (response.statusCode == 200) {
       print('Başarılı cevap: ${response.body}');
@@ -212,7 +213,7 @@ class _GallerySelectScreenState extends State<GallerySelectScreen> {
         .toList();
 
     if (matchedProducts.isNotEmpty) {
-      _dialogMinusPlusBuilder(products.first);
+      _dialogMinusPlusBuilder(matchedProducts.first);
     }
   }
 
