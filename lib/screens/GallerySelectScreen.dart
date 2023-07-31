@@ -163,7 +163,7 @@ class _GallerySelectScreenState extends State<GallerySelectScreen> {
               },
             ),
             TextButton(
-              child: const Text('Çıkart'),
+              child: const Text('Eksilt'),
               onPressed: () async {
                 final String productName = _productNameController.text;
                 final int? productCount =
@@ -171,10 +171,22 @@ class _GallerySelectScreenState extends State<GallerySelectScreen> {
                 _update(documentSnapshot);
                 if (productCount != null) {
                   int num = int.parse(_productCountController.text);
-                  await _products.doc(documentSnapshot!.id).update({
-                    // "productName": productName,
-                    "productCount": productCount - num
-                  });
+                  print("num : $num ---- productCount : $productCount");
+                  print("dogru yere geliyor");
+
+                  if (num >= productCount) {
+                    await _products.doc(documentSnapshot!.id).update({
+                      // "productName": productName,
+                      "productCount": num - productCount,
+                    });
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Ürün çıkartma yapamazsınız.'),
+                      ),
+                    );
+                  }
+
                   _productNameController.text = "";
                   _productCountController.text = "";
                 }
