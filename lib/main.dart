@@ -5,7 +5,6 @@ import 'package:mpaiapp/screens/GallerySelectScreen.dart';
 import 'package:mpaiapp/screens/checkImageScreen.dart';
 import 'package:mpaiapp/screens/loginScreen.dart';
 import 'package:mpaiapp/screens/products.dart';
-
 import 'package:mpaiapp/services/forHttp.dart';
 
 Future<void> main() async {
@@ -37,11 +36,6 @@ class MyApp extends StatelessWidget {
         '/forHttp': (context) => ForHttp(),
         '/checkImageScreen': (context) => CheckImageScreen(),
         '/gallery': (context) => GallerySelectScreen(),
-
-        //{
-        //  File file = ModalRoute.of(context)!.settings.arguments as File;
-        //  return CheckImageScreen(file);
-        //},
       },
     );
   }

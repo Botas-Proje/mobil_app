@@ -31,8 +31,7 @@ class _GallerySelectScreenState extends State<GallerySelectScreen> {
 
   String values = '';
   List<String> results = [];
-  Map<String, dynamic> end =
-      {}; // {"Telefon": "0.9", "Klavye": "0.1", "Priz": "0.0"};
+  Map<String, dynamic> end = {};
 
   Map<String, dynamic> short_end = {};
   XFile? image;
@@ -70,14 +69,6 @@ class _GallerySelectScreenState extends State<GallerySelectScreen> {
 
     final response = await HttpService.post('', {'image': base64String});
     values = response.body;
-
-    /*
-    if (response.statusCode >= 200 && response.statusCode <= 299) {
-      setState(() {
-        end = Map<String, dynamic>.from(jsonDecode(response.body));
-      });
-    }  */
-
     results = values.split(",");
     for (var i = 0; i < results.length; i++) {
       var deger = results[i].split(":");
@@ -223,6 +214,8 @@ class _GallerySelectScreenState extends State<GallerySelectScreen> {
           (snapshot) => snapshot['productName'] == id,
         )
         .toList();
+    print("gelen product name : $id");
+    print(matchedProducts);
 
     if (matchedProducts.isNotEmpty) {
       _dialogMinusPlusBuilder(matchedProducts.first);
@@ -287,7 +280,9 @@ class _GallerySelectScreenState extends State<GallerySelectScreen> {
                       MyCard(
                         i,
                         i + ":" + end[i],
-                        onTap: () => checkProduct(i),
+                        onTap: () {
+                          checkProduct(i);
+                        },
                       ),
                   ],
                 )
